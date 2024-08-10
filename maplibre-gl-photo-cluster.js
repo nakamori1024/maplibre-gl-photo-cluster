@@ -124,7 +124,7 @@ export class PhotoExtension {
                     new maplibregl.Popup({ offset: 25 })
                         .setHTML(`
                             <div class="popup-content">
-                                <img src="${feature.properties.picture}" class="popup-image" />
+                                <img src="${feature.properties.picture}" class="popup-image" style="width: 200px; height: auto;" />
                                 <p class="popup-caption">${feature.properties.caption}</p>
                             </div>
                         `)

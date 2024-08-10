@@ -102,6 +102,7 @@ export class PhotoExtension {
             el.style.backgroundImage = `url(${feature.properties.icon})`;
             el.style.width = '50px';
             el.style.height = '50px';
+            el.style.backgroundColor = '#fff';
             el.style.backgroundSize = 'cover';
             el.style.backgroundPosition = 'center';
             el.style.borderRadius = '50%';
@@ -114,7 +115,7 @@ export class PhotoExtension {
 
             el.addEventListener("click", clickFunction);
 
-            const marker = new maplibregl.Marker(el);
+            const marker = new maplibregl.Marker({element: el});
 
             marker.setLngLat(feature.geometry.coordinates);
 

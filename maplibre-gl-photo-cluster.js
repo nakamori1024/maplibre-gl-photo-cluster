@@ -1,4 +1,4 @@
-class PhotoCluster{
+export class PhotoCluster{
     constructor(photos=[]) {
         this.photos = photos;
     }
@@ -19,7 +19,7 @@ class PhotoCluster{
     }
 }
 
-class PhotoExtension {
+export class PhotoExtension {
     constructor(map) {
         this.map = map;
         this.markers = [];
@@ -90,7 +90,7 @@ class PhotoExtension {
     addPhotoLayer = (shape, popup, clickFunction) => {
         this.removeCustomMarkers();
 
-        const style = map.getStyle();
+        const style = this.map.getStyle();
 
         const features = this.map.querySourceFeatures('photos', {
             filter: ['!', ['has', 'point_count']]
@@ -157,7 +157,7 @@ class PhotoExtension {
     }
 }
 
-class PhotoPoint {
+export class PhotoPoint {
     constructor(coordinates, icon, picture=icon, properties={}) {
         this.coordinates = coordinates;
         this.icon = icon;
@@ -174,39 +174,3 @@ class PhotoPoint {
         return this.properties;
     }
 }
-
-
-
-
-
-// // 使用例
-// const map = new maplibregl.Map({
-//     container: 'map',
-//     style: 'https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json', // style URL
-//     center: [139.767, 35.681],
-//     zoom: 12
-// });
-
-
-// const photo1 = new PhotoPoint([139.767, 35.681], 'https://cdn.4travel.jp/img/thumbnails/magazine/article/custom_picture/2176.jpg?1531889640');
-// const photo2 = new PhotoPoint([139.7000, 35.6900],'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiAyMmXKQvsPMPVck5FilUJbsAvI9JskLGyTpicw2QG2RK-cAkBBgy4RfIVSh-anB33qYcRLsRfPNiGUYEmSnShnvxlEoqPIleR8nS0tSD8H1kjNvYSfwKMbU_Yj54IHZj73OeiFnrSNOwP/s614/food_kakuni_manju.png')
-
-// photo1.addProperties("caption", "test1")
-
-// const photos = new PhotoCluster();
-// photos.addPhoto(photo1);
-// photos.addPhoto(photo2);
-
-// const testmap = new PhotoExtension(map);
-
-
-// function testFunction() {
-//     console.log("aaaa");
-// }
-
-// map.addPhotoCluster({
-//     source: photos,
-//     shape: "square",
-//     popup: true,
-//     clickFunction: testFunction
-// });

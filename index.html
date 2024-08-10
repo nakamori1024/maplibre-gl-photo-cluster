@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maplibre-gl-photo-cluster</title>
+    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
+    <!-- <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script> -->
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+        /* popupとmarkerのstyle設定が必要だった */
+        .popup-image {
+            width: 200px;
+            height: auto;
+        }
+        .marker {
+            background-color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <!-- body内でmaplibreとmaplibre-gl-photo-cluster.jsを読み込む仕様 -->
+    <script src="https://unpkg.com/maplibre-gl@1.15.3/dist/maplibre-gl.js"></script>
+    <script type="module" src="maplibre-gl-photo-cluster.js"></script>
+
+    <!-- よく分かってないけど、type="module"にしない -->
+    <!-- <script> -->
+    <script type="module">
+        import { PhotoPoint, PhotoCluster, PhotoExtension } from './maplibre-gl-photo-cluster.js';
+
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json',
+            center: [139.767, 35.681],
+            zoom: 12
+        });
+
+        const photo1 = new PhotoPoint([139.767, 35.681], 'https://cdn.4travel.jp/img/thumbnails/magazine/article/custom_picture/2176.jpg?1531889640');
+        const photo2 = new PhotoPoint([139.7000, 35.6900],'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiAyMmXKQvsPMPVck5FilUJbsAvI9JskLGyTpicw2QG2RK-cAkBBgy4RfIVSh-anB33qYcRLsRfPNiGUYEmSnShnvxlEoqPIleR8nS0tSD8H1kjNvYSfwKMbU_Yj54IHZj73OeiFnrSNOwP/s614/food_kakuni_manju.png');
+
+        photo1.addProperties("caption", "test1");
+
+        const photos = new PhotoCluster();
+        photos.addPhoto(photo1);
+        photos.addPhoto(photo2);
+
+        new PhotoExtension(map);
+
+        function testFunction() {
+            console.log("aaaa");
+        }
+
+        map.addPhotoCluster({
+            source: photos,
+            shape: "square",
+            popup: true,
+            clickFunction: testFunction
+        });
+    </script>
+</body>
+</html>

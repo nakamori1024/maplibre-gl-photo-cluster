@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>maplibre-gl-photo-cluster</title>
-    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
-    <!-- <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script> -->
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@3.2.0/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@3.2.0/dist/maplibre-gl.js'></script>
+    <script type="module" src="maplibre-gl-photo-cluster.js"></script>
     <style>
         body { margin: 0; padding: 0; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
@@ -28,12 +29,6 @@
 <body>
     <div id="map"></div>
 
-    <!-- body内でmaplibreとmaplibre-gl-photo-cluster.jsを読み込む仕様 -->
-    <script src="https://unpkg.com/maplibre-gl@1.15.3/dist/maplibre-gl.js"></script>
-    <script type="module" src="maplibre-gl-photo-cluster.js"></script>
-
-    <!-- よく分かってないけど、type="module"にしない -->
-    <!-- <script> -->
     <script type="module">
         import { PhotoPoint, PhotoCluster, PhotoExtension } from './maplibre-gl-photo-cluster.js';
 

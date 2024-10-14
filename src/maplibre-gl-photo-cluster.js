@@ -113,7 +113,7 @@ export class PhotoExtension {
                 el.style.borderRadius = '0';
             };
 
-            el.addEventListener("click", clickFunction);
+            el.addEventListener("click", () => clickFunction(feature));
 
             const marker = new maplibregl.Marker({element: el});
 

@@ -4,17 +4,22 @@ export class PhotoCluster{
     }
 
     addPhoto(photo) {
+        let properties = {
+            "icon": photo.icon,
+            "picture": photo.picture
+        };
+
+        for (let key in photo.properties) {
+            properties[key] = photo.properties[key];
+        };
+
         this.photos.push({
             'type': 'Feature',
             'geometry': {
                 'type': 'Point',
                 'coordinates': photo.coordinates
             },
-            'properties': {
-                "icon": photo.icon,
-                "picture": photo.picture,
-                "caption": photo.properties.caption
-            }
+            'properties': properties
         });
     }
 }
@@ -113,7 +118,12 @@ export class PhotoExtension {
                 el.style.borderRadius = '0';
             };
 
-            el.addEventListener("click", clickFunction);
+            let props = Object.assign({}, feature.properties);
+            delete props.icon;
+            delete props.picture;
+            let photoPoint = new PhotoPoint(feature.geometry.coordinates, feature.properties.icon, feature.properties.picture, props);
+
+            el.addEventListener("click", () => clickFunction(photoPoint));
 
             const marker = new maplibregl.Marker({element: el});
 
@@ -171,7 +181,6 @@ export class PhotoPoint {
     }
 
     getProperties() {
-        console.log(this.properties);
         return this.properties;
     }
 }

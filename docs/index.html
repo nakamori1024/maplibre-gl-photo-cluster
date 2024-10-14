@@ -33,6 +33,7 @@
 
         // Add properties
         photo1.addProperties("caption", "ごぼ天うどん");
+        photo1.addProperties("description", "ごぼ天うどんは、ごぼ天をのせたうどんです。");
         photo2.addProperties("caption", "角煮まんじゅう");
 
         // Create photo cluster
@@ -50,8 +51,8 @@
         });
 
         // Example function
-        function testFunction() {
-            console.log("test");
+        function testFunction(photo) {
+            console.log(photo.getProperties());
         }
     </script>
 </body>

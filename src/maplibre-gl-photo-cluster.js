@@ -94,13 +94,35 @@ export class PhotoExtension {
         const style = this.map.getStyle();
 
         const features = this.map.querySourceFeatures('photos', {
-            filter: ['!', ['has', 'point_count']]
+            // filter: ['!', ['has', 'point_count']]
         });
 
         features.forEach(feature => {
             const el = document.createElement('div');
             el.className = 'marker';
-            el.style.backgroundImage = `url(${feature.properties.icon})`;
+
+            if (feature.properties.cluster) {
+                const clusterId = feature.properties.cluster_id;
+                this.map.getSource('photos').getClusterLeaves(
+                    clusterId, // クラスターID
+                    1, // 取得するポイント数 (ここでは1つだけ取得)
+                    0, // オフセット
+                    (err, leaves) => {
+                        if (err) {
+                            console.error('Error retrieving cluster leaves:', err);
+                            return;
+                        }
+                        // クラスター内の最初のポイントのiconプロパティを使う
+                        const firstIcon = leaves[0]?.properties?.icon;
+                        if (firstIcon) {
+                            el.style.backgroundImage = `url(${firstIcon})`;
+                        }
+                    }
+                );
+            } else {
+                el.style.backgroundImage = `url(${feature.properties.icon})`;
+            }
+            
             el.style.width = '50px';
             el.style.height = '50px';
             el.style.backgroundColor = '#fff';

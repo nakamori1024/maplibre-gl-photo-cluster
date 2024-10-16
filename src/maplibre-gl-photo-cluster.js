@@ -79,16 +79,20 @@ export class PhotoExtension {
             this.addClusterLayer();
 
             const addMarker = () => this.addPhotoLayer(shape, popup, clickFunction);
-            this.map.on("render", addMarker);
+
+            // 遅延を入れてマーカーを追加
+            setTimeout(() => {
+                addMarker();
+            }, 100); // 100msの遅延
 
             this.map.on("moveend", () => {
-                this.map.off("render", addMarker);
                 addMarker();
             })
         });
     }
 
     addPhotoLayer = (shape, popup, clickFunction) => {
+        console.log("addPhotoLayer");
         this.removeCustomMarkers();
 
         const style = this.map.getStyle();

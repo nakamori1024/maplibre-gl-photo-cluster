@@ -81,10 +81,6 @@ export class PhotoExtension {
             const addMarker = () => this.addPhotoLayer(shape, popup, clickFunction);
             this.map.on("render", addMarker);
 
-            // this.map.on("click", () => {
-            //     this.map.off("render", addMarker);
-            // })
-
             this.map.on("move", () => {
                 this.map.off("render", addMarker);
                 addMarker();

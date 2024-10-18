@@ -34,41 +34,12 @@ export class PhotoExtension {
 
     addClusterLayer = () => {
         this.map.addLayer({
-            id: 'clusters',
+            id: "invisible-points",
             type: 'circle',
             source: 'photos',
             filter: ['has', 'point_count'],
             paint: {
-                'circle-color': [
-                    'step',
-                    ['get', 'point_count'],
-                    '#51bbd6',
-                    100,
-                    '#f1f075',
-                    750,
-                    '#f28cb1'
-                ],
-                'circle-radius': [
-                    'step',
-                    ['get', 'point_count'],
-                    20,
-                    100,
-                    30,
-                    750,
-                    40
-                ]
-            }
-        });
-
-        this.map.addLayer({
-            id: 'cluster-count',
-            type: 'symbol',
-            source: 'photos',
-            filter: ['has', 'point_count'],
-            layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                'text-size': 12
+                'circle-opacity': 0.0,
             }
         });
     }
@@ -117,6 +88,7 @@ export class PhotoExtension {
 
             if (feature.properties.cluster) {
                 const clusterId = feature.properties.cluster_id;
+                const pointCount = feature.properties.point_count;
                 this.map.getSource('photos').getClusterLeaves(
                     clusterId,
                     Infinity, // All points in cluster
@@ -148,6 +120,24 @@ export class PhotoExtension {
                             this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
                     }
                 );
+
+                const badge = document.createElement('div');
+                badge.className = 'badge';
+                badge.textContent = pointCount;
+                badge.style.width = '20px';
+                badge.style.height = '20px';
+                badge.style.backgroundColor = '#fff';
+                badge.style.color = '#000';
+                badge.style.opacity = '0.8';
+                badge.style.borderRadius = '50%';
+                badge.style.display = 'flex';
+                badge.style.justifyContent = 'center';
+                badge.style.border = '2px solid #fff';
+                badge.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                badge.style.marginLeft = '-7px';
+                badge.style.marginTop = '-7px';
+
+                el.appendChild(badge);
             } else {
                 el.style.backgroundImage = `url(${feature.properties.icon})`;
 

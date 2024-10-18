@@ -92,7 +92,6 @@ export class PhotoExtension {
     }
 
     addPhotoLayer = (shape, popup, clickFunction) => {
-        console.log("addPhotoLayer");
         this.removeCustomMarkers();
 
         const style = this.map.getStyle();
@@ -101,30 +100,8 @@ export class PhotoExtension {
 
         features.forEach(feature => {
             const el = document.createElement('div');
-            el.className = 'marker';
-
-            if (feature.properties.cluster) {
-                const clusterId = feature.properties.cluster_id;
-                this.map.getSource('photos').getClusterLeaves(
-                    clusterId,
-                    1, // Number of points to retrieve (in this case, only one)
-                    0, // Offset amount
-                    (err, leaves) => {
-                        if (err) {
-                            console.error('Error retrieving cluster leaves:', err);
-                            return;
-                        }
-                        // Use the 'icon' property of the first point in the cluster
-                        const firstIcon = leaves[0]?.properties?.icon;
-                        if (firstIcon) {
-                            el.style.backgroundImage = `url(${firstIcon})`;
-                        }
-                    }
-                );
-            } else {
-                el.style.backgroundImage = `url(${feature.properties.icon})`;
-            }
             
+            el.className = 'marker';
             el.style.width = '50px';
             el.style.height = '50px';
             el.style.backgroundColor = '#fff';
@@ -138,18 +115,55 @@ export class PhotoExtension {
                 el.style.borderRadius = '0';
             };
 
-            let props = Object.assign({}, feature.properties);
-            delete props.icon;
-            delete props.picture;
-            let photoPoint = new PhotoPoint(feature.geometry.coordinates, feature.properties.icon, feature.properties.picture, props);
+            if (feature.properties.cluster) {
+                const clusterId = feature.properties.cluster_id;
+                this.map.getSource('photos').getClusterLeaves(
+                    clusterId,
+                    Infinity, // All points in cluster
+                    0, // Offset
+                    (err, leaves) => {
+                        if (err) {
+                            console.error('Error retrieving cluster leaves:', err);
+                            return;
+                        }
+                        // Use the 'icon' property of the first point in the cluster
+                        const firstIcon = leaves[0]?.properties?.icon;
+                        if (firstIcon) {
+                            el.style.backgroundImage = `url(${firstIcon})`;
+                        }
 
-            el.addEventListener("click", () => clickFunction(photoPoint));
+                        let minLng = Infinity, minLat = Infinity;
+                        let maxLng = -Infinity, maxLat = -Infinity;
+
+                        // Calculate the bounds of the cluster
+                        leaves.forEach(leaf => {
+                            const [lng, lat] = leaf.geometry.coordinates;
+                            if (lng < minLng) minLng = lng;
+                            if (lng > maxLng) maxLng = lng;
+                            if (lat < minLat) minLat = lat;
+                            if (lat > maxLat) maxLat = lat;
+                        });
+
+                        el.addEventListener("click", () => {
+                            this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
+                    }
+                );
+            } else {
+                el.style.backgroundImage = `url(${feature.properties.icon})`;
+
+                let props = Object.assign({}, feature.properties);
+                delete props.icon;
+                delete props.picture;
+                let photoPoint = new PhotoPoint(feature.geometry.coordinates, feature.properties.icon, feature.properties.picture, props);
+
+                el.addEventListener("click", () => clickFunction(photoPoint));
+            }
 
             const marker = new maplibregl.Marker({element: el});
 
             marker.setLngLat(feature.geometry.coordinates);
 
-            if (popup) {
+            if (popup && !feature.properties.cluster) {
                 marker.setPopup(
                     new maplibregl.Popup({ offset: 25 })
                         .setHTML(`

@@ -117,6 +117,7 @@ export class PhotoExtension {
 
             if (feature.properties.cluster) {
                 const clusterId = feature.properties.cluster_id;
+                const pointCount = feature.properties.point_count;
                 this.map.getSource('photos').getClusterLeaves(
                     clusterId,
                     Infinity, // All points in cluster
@@ -151,7 +152,7 @@ export class PhotoExtension {
 
                 const badge = document.createElement('div');
                 badge.className = 'badge';
-                badge.textContent = '100'; // 数字を設定
+                badge.textContent = pointCount;
                 badge.style.width = '20px';
                 badge.style.height = '20px';
                 badge.style.backgroundColor = '#fff';

@@ -120,8 +120,8 @@ export class PhotoExtension {
                 const clusterId = feature.properties.cluster_id;
                 this.map.getSource('photos').getClusterLeaves(
                     clusterId,
-                    1, // Number of points to retrieve (in this case, only one)
-                    0, // Offset amount
+                    Infinity, // All points in cluster
+                    0, // Offset
                     (err, leaves) => {
                         if (err) {
                             console.error('Error retrieving cluster leaves:', err);
@@ -132,6 +132,27 @@ export class PhotoExtension {
                         if (firstIcon) {
                             el.style.backgroundImage = `url(${firstIcon})`;
                         }
+
+                        // 緯度・経度の初期値を設定
+                        let minLng = Infinity, minLat = Infinity;
+                        let maxLng = -Infinity, maxLat = -Infinity;
+
+                        // 各ポイントの座標を走査して範囲を計算
+                        leaves.forEach(leaf => {
+                            const [lng, lat] = leaf.geometry.coordinates;
+                            if (lng < minLng) minLng = lng;
+                            if (lng > maxLng) maxLng = lng;
+                            if (lat < minLat) minLat = lat;
+                            if (lat > maxLat) maxLat = lat;
+                        });
+
+                        // バウンディングボックスの結果を出力
+                        console.log(`Bounding Box: 
+                            South-West: [${minLng}, ${minLat}]
+                            North-East: [${maxLng}, ${maxLat}]`);
+
+                        el.addEventListener("click", () => {
+                            this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
                     }
                 );
             } else {

@@ -133,11 +133,10 @@ export class PhotoExtension {
                             el.style.backgroundImage = `url(${firstIcon})`;
                         }
 
-                        // 緯度・経度の初期値を設定
                         let minLng = Infinity, minLat = Infinity;
                         let maxLng = -Infinity, maxLat = -Infinity;
 
-                        // 各ポイントの座標を走査して範囲を計算
+                        // Calculate the bounds of the cluster
                         leaves.forEach(leaf => {
                             const [lng, lat] = leaf.geometry.coordinates;
                             if (lng < minLng) minLng = lng;
@@ -145,11 +144,6 @@ export class PhotoExtension {
                             if (lat < minLat) minLat = lat;
                             if (lat > maxLat) maxLat = lat;
                         });
-
-                        // バウンディングボックスの結果を出力
-                        console.log(`Bounding Box: 
-                            South-West: [${minLng}, ${minLat}]
-                            North-East: [${maxLng}, ${maxLat}]`);
 
                         el.addEventListener("click", () => {
                             this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});

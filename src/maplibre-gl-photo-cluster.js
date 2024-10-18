@@ -80,10 +80,10 @@ export class PhotoExtension {
 
             const addMarker = () => this.addPhotoLayer(shape, popup, clickFunction);
 
-            // 遅延を入れてマーカーを追加
+            // Add marker with a delay to ensure it is properly displayed
             setTimeout(() => {
                 addMarker();
-            }, 100); // 100msの遅延
+            }, 100); // 100ms delay
 
             this.map.on("moveend", () => {
                 addMarker();
@@ -97,9 +97,7 @@ export class PhotoExtension {
 
         const style = this.map.getStyle();
 
-        const features = this.map.querySourceFeatures('photos', {
-            // filter: ['!', ['has', 'point_count']]
-        });
+        const features = this.map.querySourceFeatures('photos');
 
         features.forEach(feature => {
             const el = document.createElement('div');
@@ -108,15 +106,15 @@ export class PhotoExtension {
             if (feature.properties.cluster) {
                 const clusterId = feature.properties.cluster_id;
                 this.map.getSource('photos').getClusterLeaves(
-                    clusterId, // クラスターID
-                    1, // 取得するポイント数 (ここでは1つだけ取得)
-                    0, // オフセット
+                    clusterId,
+                    1, // Number of points to retrieve (in this case, only one)
+                    0, // Offset amount
                     (err, leaves) => {
                         if (err) {
                             console.error('Error retrieving cluster leaves:', err);
                             return;
                         }
-                        // クラスター内の最初のポイントのiconプロパティを使う
+                        // Use the 'icon' property of the first point in the cluster
                         const firstIcon = leaves[0]?.properties?.icon;
                         if (firstIcon) {
                             el.style.backgroundImage = `url(${firstIcon})`;

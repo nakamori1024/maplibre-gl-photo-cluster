@@ -79,32 +79,52 @@ export class PhotoExtension {
             this.addClusterLayer();
 
             const addMarker = () => this.addPhotoLayer(shape, popup, clickFunction);
-            this.map.on("render", addMarker);
 
-            this.map.on("click", () => {
-                this.map.off("render", addMarker);
-            })
+            // Add marker with a delay to ensure it is properly displayed
+            setTimeout(() => {
+                addMarker();
+            }, 100); // 100ms delay
 
-            this.map.on("move", () => {
-                this.map.off("render", addMarker);
+            this.map.on("moveend", () => {
                 addMarker();
             })
         });
     }
 
     addPhotoLayer = (shape, popup, clickFunction) => {
+        console.log("addPhotoLayer");
         this.removeCustomMarkers();
 
         const style = this.map.getStyle();
 
-        const features = this.map.querySourceFeatures('photos', {
-            filter: ['!', ['has', 'point_count']]
-        });
+        const features = this.map.querySourceFeatures('photos');
 
         features.forEach(feature => {
             const el = document.createElement('div');
             el.className = 'marker';
-            el.style.backgroundImage = `url(${feature.properties.icon})`;
+
+            if (feature.properties.cluster) {
+                const clusterId = feature.properties.cluster_id;
+                this.map.getSource('photos').getClusterLeaves(
+                    clusterId,
+                    1, // Number of points to retrieve (in this case, only one)
+                    0, // Offset amount
+                    (err, leaves) => {
+                        if (err) {
+                            console.error('Error retrieving cluster leaves:', err);
+                            return;
+                        }
+                        // Use the 'icon' property of the first point in the cluster
+                        const firstIcon = leaves[0]?.properties?.icon;
+                        if (firstIcon) {
+                            el.style.backgroundImage = `url(${firstIcon})`;
+                        }
+                    }
+                );
+            } else {
+                el.style.backgroundImage = `url(${feature.properties.icon})`;
+            }
+            
             el.style.width = '50px';
             el.style.height = '50px';
             el.style.backgroundColor = '#fff';

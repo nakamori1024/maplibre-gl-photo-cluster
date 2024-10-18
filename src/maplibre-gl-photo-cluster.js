@@ -101,7 +101,20 @@ export class PhotoExtension {
 
         features.forEach(feature => {
             const el = document.createElement('div');
+            
             el.className = 'marker';
+            el.style.width = '50px';
+            el.style.height = '50px';
+            el.style.backgroundColor = '#fff';
+            el.style.backgroundSize = 'cover';
+            el.style.backgroundPosition = 'center';
+            el.style.borderRadius = '50%';
+            el.style.border = '2px solid #fff';
+            el.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+
+            if (shape == "square") {
+                el.style.borderRadius = '0';
+            };
 
             if (feature.properties.cluster) {
                 const clusterId = feature.properties.cluster_id;
@@ -123,33 +136,20 @@ export class PhotoExtension {
                 );
             } else {
                 el.style.backgroundImage = `url(${feature.properties.icon})`;
+
+                let props = Object.assign({}, feature.properties);
+                delete props.icon;
+                delete props.picture;
+                let photoPoint = new PhotoPoint(feature.geometry.coordinates, feature.properties.icon, feature.properties.picture, props);
+
+                el.addEventListener("click", () => clickFunction(photoPoint));
             }
-            
-            el.style.width = '50px';
-            el.style.height = '50px';
-            el.style.backgroundColor = '#fff';
-            el.style.backgroundSize = 'cover';
-            el.style.backgroundPosition = 'center';
-            el.style.borderRadius = '50%';
-            el.style.border = '2px solid #fff';
-            el.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
-
-            if (shape == "square") {
-                el.style.borderRadius = '0';
-            };
-
-            let props = Object.assign({}, feature.properties);
-            delete props.icon;
-            delete props.picture;
-            let photoPoint = new PhotoPoint(feature.geometry.coordinates, feature.properties.icon, feature.properties.picture, props);
-
-            el.addEventListener("click", () => clickFunction(photoPoint));
 
             const marker = new maplibregl.Marker({element: el});
 
             marker.setLngLat(feature.geometry.coordinates);
 
-            if (popup) {
+            if (popup && !feature.properties.cluster) {
                 marker.setPopup(
                     new maplibregl.Popup({ offset: 25 })
                         .setHTML(`

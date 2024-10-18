@@ -148,6 +148,24 @@ export class PhotoExtension {
                             this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
                     }
                 );
+
+                const badge = document.createElement('div');
+                badge.className = 'badge';
+                badge.textContent = '100'; // 数字を設定
+                badge.style.width = '20px';
+                badge.style.height = '20px';
+                badge.style.backgroundColor = '#fff';
+                badge.style.color = '#000';
+                badge.style.opacity = '0.8';
+                badge.style.borderRadius = '50%';
+                badge.style.display = 'flex';
+                badge.style.justifyContent = 'center';
+                badge.style.border = '2px solid #fff';
+                badge.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                badge.style.marginLeft = '-7px';
+                badge.style.marginTop = '-7px';
+
+                el.appendChild(badge);
             } else {
                 el.style.backgroundImage = `url(${feature.properties.icon})`;
 

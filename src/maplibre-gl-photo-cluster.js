@@ -92,7 +92,6 @@ export class PhotoExtension {
     }
 
     addPhotoLayer = (shape, popup, clickFunction) => {
-        console.log("addPhotoLayer");
         this.removeCustomMarkers();
 
         const style = this.map.getStyle();

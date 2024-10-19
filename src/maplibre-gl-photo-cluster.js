@@ -179,7 +179,7 @@ export class PhotoExtension {
                 "features":source.photos
             },
             cluster: true,
-            clusterMaxZoom: 14,
+            clusterMaxZoom: 18,
             clusterRadius: 50
         });
     }

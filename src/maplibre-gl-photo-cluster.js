@@ -142,6 +142,10 @@ export class PhotoExtension {
                                         leafEl.style.backgroundImage = `url(${leaf.properties.icon})`;
                                         leafEl.style.opacity = '1';
 
+                                        if (shape == "square") {
+                                            leafEl.style.borderRadius = '0';
+                                        }
+
                                         let props = Object.assign({}, leaf.properties);
                                         delete props.icon;
                                         delete props.picture;

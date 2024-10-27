@@ -154,6 +154,18 @@ export class PhotoExtension {
                                         // 位置をずらして表示する
                                         const lngLat = this.distributeAroundPoint(leaf.geometry.coordinates, leaves.indexOf(leaf), leaves.length);
                                         leafMarker.setLngLat(lngLat);
+
+                                        if (popup) {
+                                            leafMarker.setPopup(
+                                                new maplibregl.Popup({ offset: 25 })
+                                                    .setHTML(`
+                                                        <div class="popup-content">
+                                                            <img src="${leaf.properties.picture}" class="popup-image" style="width: 200px; height: auto;" />
+                                                            <p class="popup-caption">${leaf.properties.caption}</p>
+                                                        </div>
+                                                    `)
+                                            );
+                                        }
                                         leafMarker.addTo(this.map);
                                         this.markers.push(leafMarker);
                                     });

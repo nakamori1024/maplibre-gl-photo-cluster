@@ -152,7 +152,7 @@ export class PhotoExtension {
                                         const leafMarker = new maplibregl.Marker({element: leafEl});
 
                                         // 位置をずらして表示する
-                                        const lngLat = this.distributeAroundPoint(leaf.geometry.coordinates, leaves.indexOf(leaf));
+                                        const lngLat = this.distributeAroundPoint(leaf.geometry.coordinates, leaves.indexOf(leaf), leaves.length);
                                         leafMarker.setLngLat(lngLat);
                                         leafMarker.addTo(this.map);
                                         this.markers.push(leafMarker);
@@ -231,8 +231,13 @@ export class PhotoExtension {
         });
     }
 
-    distributeAroundPoint = (center, index, radius = 0.0002) => {
-        const angle = (index * 45) * (Math.PI / 180); // 45度ごとに配置
+    distributeAroundPoint = (center, index, length, radius = 0.0002) => {
+        // ずらす角度
+        const offsetAngle = 360 / length;
+
+        // 配置する角度
+        const angle = (index * offsetAngle) * (Math.PI / 180);
+
         return [
             center[0] + radius * Math.cos(angle),
             center[1] + radius * Math.sin(angle)

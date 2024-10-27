@@ -116,7 +116,6 @@ export class PhotoExtension {
                             if (lat > maxLat) maxLat = lat;
                         });
 
-                        // 同一座標で重なっている場合
                         if (minLng == maxLng && minLat == maxLat) {
                             el.addEventListener("click", () => {
                                 this.map.flyTo({center: [minLng, minLat], zoom: 17});
@@ -124,10 +123,9 @@ export class PhotoExtension {
                                 const onFlyEnd = () => {
                                     this.map.off('moveend', onFlyEnd);
 
-                                    // 全てのマーカーを半透明にする
+                                    // Make all markers semi-transparent
                                     this.setMarkersOpacity(0.5);
 
-                                    // leavesの全ポイントのアイコンを表示する
                                     leaves.forEach(leaf => {
                                         const leafEl = document.createElement('div');
                                         leafEl.className = 'marker';
@@ -155,7 +153,7 @@ export class PhotoExtension {
 
                                         const leafMarker = new maplibregl.Marker({element: leafEl});
 
-                                        // 位置をずらして表示する
+                                        // Offset the marker from the cluster point
                                         const lngLat = this.distributeAroundPoint(leaf.geometry.coordinates, leaves.indexOf(leaf), leaves.length);
                                         leafMarker.setLngLat(lngLat);
 
@@ -174,7 +172,7 @@ export class PhotoExtension {
                                         this.markers.push(leafMarker);
                                     });
                                 }
-                                // 'moveend' イベントをリッスンして、アニメーション完了後に処理を実行
+                                // Add event listener to reset markers opacity after fly end
                                 this.map.on('moveend', onFlyEnd);
                             });
                         } else {
@@ -248,12 +246,8 @@ export class PhotoExtension {
     }
 
     distributeAroundPoint = (center, index, length, radius = 0.0002) => {
-        // ずらす角度
         const offsetAngle = 360 / length;
-
-        // 配置する角度
         const angle = (index * offsetAngle) * (Math.PI / 180);
-
         return [
             center[0] + radius * Math.cos(angle),
             center[1] + radius * Math.sin(angle)

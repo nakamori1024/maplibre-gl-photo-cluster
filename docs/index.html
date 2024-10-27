@@ -28,19 +28,27 @@
         new PhotoExtension(map);
 
         // Create photo points
-        const photo1 = new PhotoPoint([139.767, 35.681], 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgB9EsoenaBaa5b4kru40xO-ERPTtxK1MuJO_8moHTTGy-6DpNxzac9yv4RBL1Zl2qo2CM4spoAEOae1taEVdClUSUzd_C44eYB6HXeb9dYsh46CI3TT2xXrGIhf8Y7zhJnuh_1LVJJTd1v/s719/food_udon_goboten.png');
+        const photo1 = new PhotoPoint([139.7000, 35.6900], 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgB9EsoenaBaa5b4kru40xO-ERPTtxK1MuJO_8moHTTGy-6DpNxzac9yv4RBL1Zl2qo2CM4spoAEOae1taEVdClUSUzd_C44eYB6HXeb9dYsh46CI3TT2xXrGIhf8Y7zhJnuh_1LVJJTd1v/s719/food_udon_goboten.png');
         const photo2 = new PhotoPoint([139.7000, 35.6900],'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiAyMmXKQvsPMPVck5FilUJbsAvI9JskLGyTpicw2QG2RK-cAkBBgy4RfIVSh-anB33qYcRLsRfPNiGUYEmSnShnvxlEoqPIleR8nS0tSD8H1kjNvYSfwKMbU_Yj54IHZj73OeiFnrSNOwP/s614/food_kakuni_manju.png');
+        const photo3 = new PhotoPoint([139.7000, 35.6900],'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjg2n_lx_JUue8gmooJLdEjd-a-s5MFxzuyp42hzGMyU2Pa9ufjZLWqOqhWIbvdfTxWgOsTZMRjzofF2wtWpNRuE0dtI1mi70_Igu8gkXAEgRsqXUA342cJZOTUNpEchhdkPJKaW3zYmjFo/s755/food_ra-men_pa-ko-men.png');
+        const photo4 = new PhotoPoint([139.767, 35.681], 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh6tW41E9U7pCucYx06DsXGHeTjBF3U4qqbeLpzm-h65IYwm3z3syDBdquEBaowmVWwf6eQFsrLFTACeO71qcYjE5HnT266TKZelc-OENclMlGKUDjDtaV0cQ8-UiZklGgZENRkPHknSvIV/s1600/food_gyouza_enban.png');
+        const photo5 = new PhotoPoint([139.768, 35.681], 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5puNP-5AEBx1MofxgChBg-Gp0RBd5SEKwczB9RPXuH8128OlJ06jzCiarIVDxGcRmdCt4rRqdgQEm6cZ2M4yyfl6SCGzrZxfBpuXSKG0NlGPWYpsOvZUTjBEOfpTyW1-nsrD_tyLP2BeR/s1600/food_curryrice_white.png');
 
         // Add properties
         photo1.addProperties("caption", "ごぼ天うどん");
         photo1.addProperties("description", "ごぼ天うどんは、ごぼ天をのせたうどんです。");
         photo2.addProperties("caption", "角煮まんじゅう");
+        photo3.addProperties("caption", "カツ丼");
+        photo4.addProperties("caption", "餃子");
+        photo5.addProperties("caption", "カレーライス");
 
         // Create photo cluster
         const photos = new PhotoCluster();
         photos.addPhoto(photo1);
         photos.addPhoto(photo2);
-        photos.addPhoto(new PhotoPoint([139.73552611255565, 35.68161683609172], "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjg2n_lx_JUue8gmooJLdEjd-a-s5MFxzuyp42hzGMyU2Pa9ufjZLWqOqhWIbvdfTxWgOsTZMRjzofF2wtWpNRuE0dtI1mi70_Igu8gkXAEgRsqXUA342cJZOTUNpEchhdkPJKaW3zYmjFo/s755/food_ra-men_pa-ko-men.png"));
+        photos.addPhoto(photo3);
+        photos.addPhoto(photo4);
+        photos.addPhoto(photo5);
 
         // Add photo cluster
         map.addPhotoCluster({

@@ -116,8 +116,69 @@ export class PhotoExtension {
                             if (lat > maxLat) maxLat = lat;
                         });
 
-                        el.addEventListener("click", () => {
-                            this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
+                        if (minLng == maxLng && minLat == maxLat) {
+                            el.addEventListener("click", () => {
+                                this.map.flyTo({center: [minLng, minLat], zoom: 17});
+
+                                const onFlyEnd = () => {
+                                    this.map.off('moveend', onFlyEnd);
+
+                                    // Make all markers semi-transparent
+                                    this.setMarkersOpacity(0.5);
+
+                                    leaves.forEach(leaf => {
+                                        const leafEl = document.createElement('div');
+                                        leafEl.className = 'marker';
+                                        leafEl.style.width = '50px';
+                                        leafEl.style.height = '50px';
+                                        leafEl.style.backgroundColor = '#fff';
+                                        leafEl.style.backgroundSize = 'cover';
+                                        leafEl.style.backgroundPosition = 'center';
+                                        leafEl.style.borderRadius = '50%';
+                                        leafEl.style.border = '2px solid #fff';
+                                        leafEl.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                                        leafEl.style.backgroundImage = `url(${leaf.properties.icon})`;
+                                        leafEl.style.opacity = '1';
+
+                                        if (shape == "square") {
+                                            leafEl.style.borderRadius = '0';
+                                        }
+
+                                        let props = Object.assign({}, leaf.properties);
+                                        delete props.icon;
+                                        delete props.picture;
+                                        let photoPoint = new PhotoPoint(leaf.geometry.coordinates, leaf.properties.icon, leaf.properties.picture, props);
+
+                                        leafEl.addEventListener("click", () => clickFunction(photoPoint));
+
+                                        const leafMarker = new maplibregl.Marker({element: leafEl});
+
+                                        // Offset the marker from the cluster point
+                                        const lngLat = this.distributeAroundPoint(leaf.geometry.coordinates, leaves.indexOf(leaf), leaves.length);
+                                        leafMarker.setLngLat(lngLat);
+
+                                        if (popup) {
+                                            leafMarker.setPopup(
+                                                new maplibregl.Popup({ offset: 25 })
+                                                    .setHTML(`
+                                                        <div class="popup-content">
+                                                            <img src="${leaf.properties.picture}" class="popup-image" style="width: 200px; height: auto;" />
+                                                            <p class="popup-caption">${leaf.properties.caption}</p>
+                                                        </div>
+                                                    `)
+                                            );
+                                        }
+                                        leafMarker.addTo(this.map);
+                                        this.markers.push(leafMarker);
+                                    });
+                                }
+                                // Add event listener to reset markers opacity after fly end
+                                this.map.on('moveend', onFlyEnd);
+                            });
+                        } else {
+                            el.addEventListener("click", () => {
+                                this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
+                        };
                     }
                 );
 
@@ -179,16 +240,32 @@ export class PhotoExtension {
                 "features":source.photos
             },
             cluster: true,
-            clusterMaxZoom: 14,
+            clusterMaxZoom: 18,
             clusterRadius: 50
         });
     }
+
+    distributeAroundPoint = (center, index, length, radius = 0.0002) => {
+        const offsetAngle = 360 / length;
+        const angle = (index * offsetAngle) * (Math.PI / 180);
+        return [
+            center[0] + radius * Math.cos(angle),
+            center[1] + radius * Math.sin(angle)
+        ];
+    };
 
     removeCustomMarkers() {
         if (this.markers) {
             this.markers.forEach(marker => marker.remove());
             this.markers = [];
         }
+    }
+
+    setMarkersOpacity(opacity) {
+        this.markers.forEach(marker => {
+            const element = marker.getElement();
+            element.style.opacity = opacity;
+        });
     }
 }
 

@@ -124,6 +124,9 @@ export class PhotoExtension {
                                 const onFlyEnd = () => {
                                     this.map.off('moveend', onFlyEnd);
 
+                                    // 全てのマーカーを半透明にする
+                                    this.setMarkersOpacity(0.5);
+
                                     // leavesの全ポイントのアイコンを表示する
                                     leaves.forEach(leaf => {
                                         const leafEl = document.createElement('div');
@@ -241,6 +244,13 @@ export class PhotoExtension {
             this.markers.forEach(marker => marker.remove());
             this.markers = [];
         }
+    }
+
+    setMarkersOpacity(opacity) {
+        this.markers.forEach(marker => {
+            const element = marker.getElement();
+            element.style.opacity = opacity;
+        });
     }
 }
 

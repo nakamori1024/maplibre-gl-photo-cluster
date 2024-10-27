@@ -116,8 +116,52 @@ export class PhotoExtension {
                             if (lat > maxLat) maxLat = lat;
                         });
 
-                        el.addEventListener("click", () => {
-                            this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
+                        // 同一座標で重なっている場合
+                        if (minLng == maxLng && minLat == maxLat) {
+                            el.addEventListener("click", () => {
+                                this.map.flyTo({center: [minLng, minLat], zoom: 17});
+
+                                const onFlyEnd = () => {
+                                    this.map.off('moveend', onFlyEnd);
+
+                                    // leavesの全ポイントのアイコンを表示する
+                                    leaves.forEach(leaf => {
+                                        const leafEl = document.createElement('div');
+                                        leafEl.className = 'marker';
+                                        leafEl.style.width = '50px';
+                                        leafEl.style.height = '50px';
+                                        leafEl.style.backgroundColor = '#fff';
+                                        leafEl.style.backgroundSize = 'cover';
+                                        leafEl.style.backgroundPosition = 'center';
+                                        leafEl.style.borderRadius = '50%';
+                                        leafEl.style.border = '2px solid #fff';
+                                        leafEl.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                                        leafEl.style.backgroundImage = `url(${leaf.properties.icon})`;
+                                        leafEl.style.opacity = '1';
+
+                                        let props = Object.assign({}, leaf.properties);
+                                        delete props.icon;
+                                        delete props.picture;
+                                        let photoPoint = new PhotoPoint(leaf.geometry.coordinates, leaf.properties.icon, leaf.properties.picture, props);
+
+                                        leafEl.addEventListener("click", () => clickFunction(photoPoint));
+
+                                        const leafMarker = new maplibregl.Marker({element: leafEl});
+
+                                        // 位置をずらして表示する
+                                        const lngLat = this.distributeAroundPoint(leaf.geometry.coordinates, leaves.indexOf(leaf));
+                                        leafMarker.setLngLat(lngLat);
+                                        leafMarker.addTo(this.map);
+                                        this.markers.push(leafMarker);
+                                    });
+                                }
+                                // 'moveend' イベントをリッスンして、アニメーション完了後に処理を実行
+                                this.map.on('moveend', onFlyEnd);
+                            });
+                        } else {
+                            el.addEventListener("click", () => {
+                                this.map.fitBounds([[minLng, minLat], [maxLng, maxLat]], { padding: 100 })});
+                        };
                     }
                 );
 
@@ -183,6 +227,14 @@ export class PhotoExtension {
             clusterRadius: 50
         });
     }
+
+    distributeAroundPoint = (center, index, radius = 0.0002) => {
+        const angle = (index * 45) * (Math.PI / 180); // 45度ごとに配置
+        return [
+            center[0] + radius * Math.cos(angle),
+            center[1] + radius * Math.sin(angle)
+        ];
+    };
 
     removeCustomMarkers() {
         if (this.markers) {

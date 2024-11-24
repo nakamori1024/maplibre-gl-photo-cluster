@@ -29,7 +29,7 @@ export class PhotoExtension {
         this.map = map;
         this.markers = [];
 
-        map.addPhotoCluster = (properties) => this.addPhotoCluster(properties);
+        this.map.addPhotoCluster = (properties) => this.addPhotoCluster(properties);
     }
 
     addClusterLayer = () => {

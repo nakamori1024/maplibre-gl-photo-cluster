@@ -50,12 +50,14 @@
         photos.addPhoto(photo4);
         photos.addPhoto(photo5);
 
-        // Add photo cluster
-        map.addPhotoCluster({
-            source: photos, // PhotoCluster object
-            shape: "square", // square or circle
-            popup: true, // true or false
-            clickFunction: testFunction // function for click event
+        map.on('load', () => {
+            // Add photo cluster
+            map.addPhotoCluster({
+                source: photos, // PhotoCluster object
+                shape: "square", // square or circle
+                popup: true, // true or false
+                clickFunction: testFunction // function for click event
+            });
         });
 
         // Example function

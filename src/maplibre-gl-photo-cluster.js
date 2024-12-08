@@ -45,21 +45,19 @@ export class PhotoExtension {
     }
 
     addPhotoCluster = ({source=[], shape="square", popup=true, clickFunction=()=>{}}) => {
-        this.map.on('load', async () => {
-            this.addSource(source);
-            this.addClusterLayer();
+        this.addSource(source);
+        this.addClusterLayer();
 
-            const addMarker = () => this.addPhotoLayer(shape, popup, clickFunction);
+        const addMarker = () => this.addPhotoLayer(shape, popup, clickFunction);
 
-            // Add marker with a delay to ensure it is properly displayed
-            setTimeout(() => {
-                addMarker();
-            }, 100); // 100ms delay
+        // Add marker with a delay to ensure it is properly displayed
+        setTimeout(() => {
+            addMarker();
+        }, 100); // 100ms delay
 
-            this.map.on("moveend", () => {
-                addMarker();
-            })
-        });
+        this.map.on("moveend", () => {
+            addMarker();
+        })
     }
 
     addPhotoLayer = (shape, popup, clickFunction) => {

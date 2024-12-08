@@ -8,7 +8,7 @@ import { PhotoPoint, PhotoCluster, PhotoExtension } from '../src/maplibre-gl-pho
 ```
 
 ### Example
-```
+```js
     <script type="module">
         import { PhotoPoint, PhotoCluster, PhotoExtension } from '../src/maplibre-gl-photo-cluster.js';
 
@@ -35,12 +35,14 @@ import { PhotoPoint, PhotoCluster, PhotoExtension } from '../src/maplibre-gl-pho
         photos.addPhoto(photo1);
         photos.addPhoto(photo2);
 
-        // Add photo cluster
-        map.addPhotoCluster({
-            source: photos, // PhotoCluster object
-            shape: "square", // square or circle
-            popup: true, // true or false
-            clickFunction: testFunction // function for click event
+        map.on('load', () => {
+            // Add photo cluster
+            map.addPhotoCluster({
+                source: photos, // PhotoCluster object
+                shape: "square", // square or circle
+                popup: true, // true or false
+                clickFunction: testFunction // function for click event
+            });
         });
 
         // Example function
